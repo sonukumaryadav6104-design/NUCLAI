@@ -50,4 +50,4 @@ This project uses the **SAMSum dataset** for training and evaluation.
 
 ## ⭐ Support
 
-If you like this project, please give it a ⭐ on GitHub!
+If you like this project, please give it a ⭐ on GitHub.
