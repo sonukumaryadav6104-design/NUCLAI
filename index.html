@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUCLAI</title>
+ 
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+ 
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top, #1f1f1f, #0a0a0a);
+            color: #e5e5e5;
+            min-height: 100vh;
+        }
+ 
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+ 
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #fb923c, #facc15);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+ 
+        nav a {
+            margin-left: 20px;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 14px;
+        }
+ 
+        nav a:hover {
+            color: #fb923c;
+        }
+ 
+        /* PAGE LAYOUT */
+        .page-body {
+            display: flex;
+            gap: 24px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+            align-items: flex-start;
+        }
+ 
+        /* MAIN CONTAINER */
+        .main-card {
+            flex: 1;
+            padding: 40px;
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 12px;
+            backdrop-filter: blur(15px);
+            box-shadow:
+                0 0 50px rgba(251,146,60,0.15),
+                inset 0 0 20px rgba(0,0,0,0.6);
+        }
+ 
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            background: linear-gradient(90deg, #fb923c, #facc15);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+ 
+        h2 {
+            text-align: center;
+            color: #aaa;
+            margin: 8px 0 20px;
+            font-size: 16px;
+            font-weight: 400;
+        }
+ 
+        .tagline {
+            text-align: center;
+            color: #bbb;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+ 
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+ 
+        /* TEXTAREA */
+        textarea {
+            width: 100%;
+            height: 170px;
+            padding: 16px;
+            border-radius: 6px;
+            border: 1px solid #222;
+            background: linear-gradient(145deg, #0a0a0a, #121212);
+            color: #fff;
+            font-size: 15px;
+            resize: none;
+            box-shadow:
+                inset 0 0 12px rgba(0,0,0,0.9),
+                0 0 10px rgba(251,146,60,0.08);
+        }
+ 
+        textarea:focus {
+            outline: none;
+            border-color: #fb923c;
+            box-shadow:
+                0 0 15px rgba(251,146,60,0.5),
+                inset 0 0 12px rgba(0,0,0,1);
+        }
+ 
+        /* BUTTON */
+        .submit-btn {
+            padding: 14px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #fb923c, #f97316);
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            box-shadow: 0 0 12px rgba(251,146,60,0.3);
+            transition: box-shadow 0.2s;
+        }
+ 
+        .submit-btn:hover {
+            box-shadow: 0 0 25px rgba(251,146,60,0.6);
+        }
+ 
+        /* SUMMARY BOX */
+        #summary-output {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #222;
+            background: linear-gradient(145deg, #0b0b0b, #151515);
+            box-shadow:
+                inset 0 0 15px rgba(0,0,0,0.9),
+                0 0 12px rgba(251,146,60,0.1);
+            position: relative;
+        }
+ 
+        #summary-output::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(#fb923c, #facc15);
+            border-radius: 4px 0 0 4px;
+        }
+ 
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+ 
+        #copy-btn {
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 5px;
+            background: #222;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+ 
+        #copy-btn:hover {
+            background: #fb923c;
+        }
+ 
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+ 
+        .sidebar-card {
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 12px;
+            padding: 18px;
+            border: 1px solid rgba(255,255,255,0.07);
+            box-shadow: 0 0 20px rgba(251,146,60,0.08);
+        }
+ 
+        .sidebar-card h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #fb923c;
+            margin-bottom: 14px;
+        }
+ 
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+ 
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+ 
+        .stat-label {
+            font-size: 13px;
+            color: #999;
+        }
+ 
+        .stat-val {
+            font-size: 15px;
+            font-weight: 600;
+            color: #facc15;
+        }
+ 
+        .tip-text {
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.6;
+        }
+ 
+        .tip-text span {
+            color: #fb923c;
+        }
+ 
+        .model-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(251,146,60,0.08);
+            border-radius: 8px;
+            padding: 10px 12px;
+            border: 1px solid rgba(251,146,60,0.2);
+        }
+ 
+        .model-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            flex-shrink: 0;
+            box-shadow: 0 0 6px #4ade80;
+        }
+ 
+        .model-name {
+            font-size: 13px;
+            color: #ccc;
+        }
+ 
+        .model-name strong {
+            display: block;
+            color: #fb923c;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+ 
+        .wc-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+ 
+        .word-count-bar {
+            height: 6px;
+            background: #1a1a1a;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+ 
+        .word-count-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #fb923c, #facc15);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+ 
+        /* ── FEATURES SECTION ── */
+        .features-section {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+        }
+ 
+        .features-section h3 {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 16px;
+            font-weight: 400;
+        }
+ 
+        .features-section h3 span {
+            color: #fb923c;
+        }
+ 
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+ 
+        .feat-card {
+            background: rgba(20, 20, 20, 0.85);
+            border-radius: 10px;
+            padding: 20px 16px;
+            border: 1px solid rgba(255,255,255,0.07);
+            transition: border-color 0.2s, transform 0.2s;
+            cursor: default;
+        }
+ 
+        .feat-card:hover {
+            border-color: rgba(251,146,60,0.4);
+            transform: translateY(-3px);
+        }
+ 
+        .feat-icon {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+ 
+        .feat-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e5e5e5;
+            margin-bottom: 6px;
+        }
+ 
+        .feat-desc {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.5;
+        }
+ 
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 10px;
+            background: rgba(15,15,15,0.9);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #aaa;
+            font-size: 14px;
+        }
+ 
+        footer span {
+            color: #fb923c;
+            font-weight: bold;
+        }
+ 
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .page-body { flex-direction: column; width: 95%; }
+            .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; }
+            .sidebar-card { flex: 1 1 45%; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+ 
+        @media (max-width: 500px) {
+            .features-grid { grid-template-columns: 1fr; }
+            .sidebar-card { flex: 1 1 100%; }
+            header { padding: 12px 20px; }
+        }
+    </style>
+</head>
+ 
+<body>
+ 
+<header>
+    <div class="logo">NUCLAI</div>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+    </nav>
+</header>
+ 
+<!-- MAIN LAYOUT -->
+<div class="page-body">
+ 
+    <!-- ORIGINAL MAIN CARD (untouched logic) -->
+    <div class="main-card">
+        <h1>NUCLAI</h1>
+        <h2>AI-Powered Text Summarization using T5 Transformer</h2>
+        <p class="tagline">Generate intelligent summaries in real-time</p>
+ 
+        <form id="summarization-form">
+            <textarea id="dialogue-input" placeholder="Paste your text here..."></textarea>
+            <button class="submit-btn" type="submit">Generate Summary</button>
+        </form>
+ 
+        <div id="summary-output">
+            <div class="summary-header">
+                <h3 style="color:#e5e5e5; font-size:15px;">Summary</h3>
+                <button id="copy-btn">Copy</button>
+            </div>
+            <p id="summary-text" style="color:#bbb; font-size:14px; line-height:1.7;">Your summary will appear here...</p>
+        </div>
+    </div>
+ 
+    <!-- NEW SIDEBAR -->
+    <div class="sidebar">
+ 
+        <div class="sidebar-card">
+            <h4>Live Stats</h4>
+            <div class="stat-row">
+                <span class="stat-label">Words typed</span>
+                <span class="stat-val" id="word-count">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Characters</span>
+                <span class="stat-val" id="char-count">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Est. read time</span>
+                <span class="stat-val" id="read-time">0s</span>
+            </div>
+            <div style="margin-top: 10px;">
+                <div class="wc-label">
+                    <span>Input length</span>
+                    <span id="wc-pct">0%</span>
+                </div>
+                <div class="word-count-bar">
+                    <div class="word-count-fill" id="wc-fill"></div>
+                </div>
+            </div>
+        </div>
+ 
+        <div class="sidebar-card">
+            <h4>Model</h4>
+            <div class="model-badge">
+                <div class="model-dot"></div>
+                <div class="model-name">
+                    T5 Transformer
+                    <strong>google/t5-small (HuggingFace)</strong>
+                </div>
+            </div>
+        </div>
+ 
+        <div class="sidebar-card">
+            <h4>Tips</h4>
+            <p class="tip-text">
+                Paste at least <span>50 words</span> for best results.
+                Works great with <span>articles</span>, <span>emails</span>, and <span>reports</span>.
+            </p>
+        </div>
+ 
+        <div class="sidebar-card">
+            <h4>Session</h4>
+            <div class="stat-row">
+                <span class="stat-label">Summaries</span>
+                <span class="stat-val" id="sum-count">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Words saved</span>
+                <span class="stat-val" id="words-saved">0</span>
+            </div>
+        </div>
+ 
+    </div>
+</div>
+ 
+<!-- NEW FEATURES SECTION -->
+<div class="features-section">
+    <h3>Why use <span>NUCLAI</span>?</h3>
+    <div class="features-grid">
+        <div class="feat-card">
+            <div class="feat-icon">⚡</div>
+            <div class="feat-title">Real-time Speed</div>
+            <div class="feat-desc">Get concise summaries in seconds using state-of-the-art transformer models.</div>
+        </div>
+        <div class="feat-card">
+            <div class="feat-icon">🧠</div>
+            <div class="feat-title">Transformer-based</div>
+            <div class="feat-desc">Powered by Google's T5 via HuggingFace, fine-tuned for abstractive summarization.</div>
+        </div>
+        <div class="feat-card">
+            <div class="feat-icon">📋</div>
+            <div class="feat-title">One-click Copy</div>
+            <div class="feat-desc">Instantly copy your summary to clipboard and use it anywhere.</div>
+        </div>
+        <div class="feat-card">
+            <div class="feat-icon">🔒</div>
+            <div class="feat-title">Private & Local</div>
+            <div class="feat-desc">Your text is processed locally via your own API — no third-party storage.</div>
+        </div>
+    </div>
+</div>
+ 
+<footer>
+    This product is developed by <span>Sonu Kumar</span>
+</footer>
+ 
+<script>
+/* ── ORIGINAL LOGIC (untouched) ── */
+const form = document.getElementById("summarization-form");
+const summaryText = document.getElementById("summary-text");
+const copyBtn = document.getElementById("copy-btn");
+ 
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+ 
+    const dialogue = document.getElementById("dialogue-input").value.trim();
+    const submitButton = form.querySelector("button");
+ 
+    if (!dialogue) return;
+ 
+    summaryText.innerText = "⚡ Generating summary...";
+    submitButton.disabled = true;
+ 
+    try {
+        const response = await fetch("http://127.0.0.1:8000/summarize/", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ dialogue }),
+        });
+ 
+        const data = await response.json();
+        const result = data.summary || "No summary returned.";
+        summaryText.innerText = result;
+ 
+        /* Update session stats after summary */
+        summaryCount++;
+        const inputWords = dialogue.split(/\s+/).length;
+        const summaryWords = result.split(/\s+/).length;
+        totalWordsSaved += Math.max(0, inputWords - summaryWords);
+        document.getElementById("sum-count").textContent = summaryCount;
+        document.getElementById("words-saved").textContent = totalWordsSaved;
+ 
+    } catch (err) {
+        summaryText.innerText = `Error: ${err.message}`;
+    } finally {
+        submitButton.disabled = false;
+    }
+});
+ 
+copyBtn.addEventListener("click", () => {
+    const text = summaryText.innerText;
+    if (!text || text.includes("appear here")) return;
+    navigator.clipboard.writeText(text);
+    copyBtn.innerText = "Copied!";
+    setTimeout(() => copyBtn.innerText = "Copy", 1500);
+});
+ 
+/* ── NEW SIDEBAR LOGIC ── */
+let summaryCount = 0;
+let totalWordsSaved = 0;
+ 
+const textarea = document.getElementById("dialogue-input");
+ 
+textarea.addEventListener("input", () => {
+    const val = textarea.value.trim();
+    const words = val ? val.split(/\s+/).length : 0;
+    const chars = textarea.value.length;
+    const readSec = Math.round(words / 3);
+    const pct = Math.min(100, Math.round((words / 300) * 100));
+ 
+    document.getElementById("word-count").textContent = words;
+    document.getElementById("char-count").textContent = chars;
+    document.getElementById("read-time").textContent =
+        readSec < 60 ? readSec + "s" : Math.round(readSec / 60) + "m";
+    document.getElementById("wc-fill").style.width = pct + "%";
+    document.getElementById("wc-pct").textContent = pct + "%";
+});
+</script>
+ 
+</body>
+</html>
+ 
