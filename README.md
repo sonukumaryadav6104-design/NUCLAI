@@ -25,6 +25,7 @@ SmartSummarizer-AI is designed to automatically extract key information from lon
 * **Language:** Python
 * **Libraries:** Transformers, Pandas, NumPy
 * **Concepts:** NLP, Machine Learning
+* **Frontend:**HTML5,CSS3,JAVASCRIPT
 
 ---
 
